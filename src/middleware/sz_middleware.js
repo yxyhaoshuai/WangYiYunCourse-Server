@@ -85,9 +85,15 @@ let toolM = (req, resp, next) => {
             data
         }
     }
+    function childdict(data) {
+        return {
+            data
+        }
+    }
     resp.tool = {
         execSQL,
         ResponseTemp,
+        childdict,
         execSQLAutoResponse: function (sql, successMsg="查询成功!", handlerResultF=result=>result) {
             execSQL(sql).then(result=>{
                 resp.send(ResponseTemp(0, successMsg, handlerResultF(result)))
