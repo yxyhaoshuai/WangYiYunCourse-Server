@@ -68,7 +68,7 @@ let handlerErrorMF = function (errorResponseFilePath) {
 
         execSQL("insert into error (err_type, err_msg, err_stack) values (?, ?, ?)", [err_type, err_msg, JSON.stringify(err_stack)]).then(result=>{
             if (result.affectedRows >= 1) {
-                sendMail("501562071@qq.com", "错误报告", info)
+                sendMail("173198977@qq.com", "错误报告", info)
             }
         })
 

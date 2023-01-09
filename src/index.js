@@ -5,6 +5,7 @@ const {rizhiM, notFoundMF, handlerErrorMF, crossDomainM, toolM} = require("./mid
 
 //1、前台路由
 const homeRouter = require("./routers/client/homeRouter")
+const courseSearch = require("./routers/client/courseSearch")
 
 
 
@@ -34,6 +35,7 @@ app.use(express.static(path.resolve(__dirname, "public")));
 
 // 5、挂载路由中间件
 app.use("/",homeRouter);
+app.use("/",courseSearch)
 
 
 
