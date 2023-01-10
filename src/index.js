@@ -8,6 +8,8 @@ const homeRouter = require("./routers/client/homeRouter")
 const courseSearch = require("./routers/client/courseSearch")
 const prividerSearch = require("./routers/client/providerSearch")
 const prividerDetail = require("./routers/client/providerDetail")
+const teacherDetail = require("./routers/client/teacherDetail")
+const courseDetail = require("./routers/client/courseDetail")
 
 
 
@@ -40,6 +42,8 @@ app.use("/",homeRouter);
 app.use("/",courseSearch)
 app.use("/",prividerSearch)
 app.use("/",prividerDetail)
+app.use("/",teacherDetail)
+app.use("/",courseDetail)
 
 
 

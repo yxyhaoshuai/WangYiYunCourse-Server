@@ -1,5 +1,5 @@
 const express = require("express");
-let router = express.Router()
+let router = express.Router();
 
 router.get("/provider-search",(req,resp)=>{
     let {keyword}=req.query;
