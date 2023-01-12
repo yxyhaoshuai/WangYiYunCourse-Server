@@ -62,6 +62,24 @@ router.get("/course/introduction/:id",(req,resp)=>{
     `,[id],"课程详情查询成功！")
 })
 
+router.get("/course/introduction/comment/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        t_students.id,
+        t_students.header_url,
+        t_students.nickname,
+        t_comment.score,
+        t_comment.content,
+        t_comment.creation_time 
+    FROM
+        t_comment
+    LEFT JOIN t_students ON t_comment.student_id = t_students.id 
+    WHERE
+        t_comment.course_id = ?;
+    `,[id],"课程详情评论查询成功！")
+})
+
 
 
 module.exports = router;
