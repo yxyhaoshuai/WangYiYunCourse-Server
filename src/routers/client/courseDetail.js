@@ -81,5 +81,69 @@ router.get("/course/introduction/comment/:id",(req,resp)=>{
 })
 
 
+router.get("/course/introduction/course_item/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        * 
+    FROM
+        t_course_list 
+    WHERE
+        course_id = ? 
+    ORDER BY
+        t_course_list.id ASC;
+    `,[id],"课时条目查询成功！")
+})
+
+router.post("/course/introduction/insertcomment", (req, resp) => {
+    const {course_id, student_id, content,score} = req.body;
+
+    //查看是否评论过
+    resp.tool.execSQL(`select id from t_comment where student_id=? and course_id=?;`, [student_id,course_id]).then(result => {
+        if (result.length > 0) {
+            resp.send(resp.tool.ResponseTemp(-1, "每个人只能评论一次哦!", {}))
+        } else {
+            resp.tool.execSQLTEMPAutoResponse(`
+        INSERT INTO t_comment(course_id,student_id,content,score) VALUES(?,?,?,?);
+    `, [course_id, student_id, content,score], "评论成功!", result=>{
+                if (result.affectedRows > 0) {
+                    return {
+                        message: "评论成功!"
+                    }
+                } else {
+                    return {
+                        message: "评论失败"
+                    }
+                }
+            })
+        }
+    })
+})
+
+
+router.post("/course/introduction/insertfavorite", (req, resp) => {
+    const {course_id, student_id} = req.body;
+
+    //查看是否收藏过
+    resp.tool.execSQL(`select id from t_favorite where student_id=? and course_id=?;`, [student_id,course_id]).then(result => {
+        if (result.length > 0) {
+            resp.send(resp.tool.ResponseTemp(-1, "您已经收藏过了哦！", {}))
+        } else {
+            resp.tool.execSQLTEMPAutoResponse(`
+        INSERT INTO t_favorite(course_id,student_id) VALUES(?,?);
+    `, [course_id, student_id], "收藏成功!", result=>{
+                if (result.affectedRows > 0) {
+                    return {
+                        message: "收藏成功!"
+                    }
+                } else {
+                    return {
+                        message: "收藏失败！"
+                    }
+                }
+            })
+        }
+    })
+})
 
 module.exports = router;
