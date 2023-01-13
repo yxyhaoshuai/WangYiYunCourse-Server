@@ -126,6 +126,7 @@ router.post("/course/introduction/insertfavorite", (req, resp) => {
 
     //查看是否收藏过
     resp.tool.execSQL(`select id from t_favorite where student_id=? and course_id=?;`, [student_id,course_id]).then(result => {
+        console.log(result)
         if (result.length > 0) {
             resp.send(resp.tool.ResponseTemp(-1, "您已经收藏过了哦！", {}))
         } else {
@@ -145,5 +146,44 @@ router.post("/course/introduction/insertfavorite", (req, resp) => {
         }
     })
 })
+
+
+
+router.post("/course/introduction/courseinsertstatus",(req,resp)=>{
+    const {student_id , course_list_id ,status} = req.body;
+    resp.tool.execSQL(`
+        SELECT * FROM t_student_study_history WHERE student_id = ? and course_list_id = ?;
+    `,[student_id,course_list_id]).then(result=>{
+        if (result.length > 0){
+            resp.tool.execSQLTEMPAutoResponse(`
+                UPDATE t_student_study_history set status=? WHERE student_id = ? and course_list_id = ?;
+            `,[status,student_id,course_list_id],"学习历史状态修改成功！")
+        }else {
+            resp.tool.execSQLTEMPAutoResponse(`
+            INSERT INTO t_student_study_history ( t_student_study_history.student_id, t_student_study_history.course_list_id, t_student_study_history.status )
+            VALUES
+                ( ?, ?, ? );
+            `,[student_id,course_list_id,status],"学习状态记录成功！")
+        }
+    })
+})
+
+router.post("/course/introduction/insertcart",(req,resp)=>{
+    const {courses_id,students_id} = req.body;
+    resp.tool.execSQL(`
+    SELECT * FROM t_cart WHERE courses_id = ? and students_id = ?;
+    `,[courses_id,students_id]).then(result=>{
+        if (result.length >0){
+            resp.send(resp.tool.ResponseTemp(-1,"亲，您加入过购物车了哦",{}))
+        }else {
+            resp.tool.execSQLTEMPAutoResponse(`
+                INSERT INTO t_cart ( courses_id, students_id )
+                VALUES
+                    ( ?, ? );
+            `,[courses_id,students_id],"加入购物车成功！")
+        }
+    })
+})
+
 
 module.exports = router;
