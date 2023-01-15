@@ -160,8 +160,49 @@ router.get("/my_collect/:id",(req,resp)=>{
     `,[id],"我的收藏页查询成功！")
 })
 
+router.get("/my_coupon/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        t_discount_coupon.id,
+        issuing_agency,
+        discounts_type,
+        calculate_value,
+        starting_time,
+        stop_time,
+        course_id 
+    FROM
+        t_my_discount_coupon
+    LEFT JOIN t_discount_coupon ON t_my_discount_coupon.discount_coupon_id = t_discount_coupon.id 
+    WHERE
+        t_my_discount_coupon.student_id = ?;
+    `,[id],"我的优惠卷查询成功!")
+})
 
-//2023年1月13日开发到这里，下面的代码没有改#################################################
+router.get("/my_order/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        t_my_order.course_id,
+        t_my_order.create_time,
+        t_courses.course_title,
+        t_my_order.real_pay,
+        t_my_order.order_number,
+        t_my_order.is_viptype,
+        t_my_order.titel,
+        t_my_order.deal_state,
+        t_courses.price 
+    FROM
+        t_my_order
+    LEFT JOIN t_courses ON t_my_order.course_id = t_courses.id 
+    WHERE
+        t_my_order.student_id = ?;
+    `,[id],"我的订单查询成功!")
+})
+
+
+
+
 
 
 
