@@ -291,4 +291,22 @@ router.post("/update_password", (req, resp)=>{
     })
 })
 
+// 7. 收货地址的修改
+router.post("/update_address", (req, resp)=>{
+    const {address,student_id} = req.body;
+    resp.tool.execSQLTEMPAutoResponse(`
+        update t_students set shipping_address=? where id=?;
+    `, [address,student_id], "收货地址更新完成!", result=>{
+        if (result.affectedRows > 0) {
+            return {
+                message: "用户收货地址更新成功!"
+            }
+        } else {
+            return {
+                message: "更新失败！"
+            }
+        }
+    })
+})
+
 module.exports = router;
