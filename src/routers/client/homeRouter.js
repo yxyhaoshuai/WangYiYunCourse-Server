@@ -1,6 +1,7 @@
 const express = require("express");
 let router = express.Router()
 
+//首页测试
 router.get("/",(req,res)=>{
     res.send({
         test:"成功"
@@ -8,6 +9,8 @@ router.get("/",(req,res)=>{
 
 })
 
+
+//多级大纲列表查询
 router.get("/class_list",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
@@ -22,6 +25,7 @@ router.get("/class_list",(req,resp)=>{
     `,[8],"多级大纲列表查询成功!")
 })
 
+//广告轮播图查询
 router.get("/ad",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT

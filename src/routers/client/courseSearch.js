@@ -2,7 +2,7 @@ const express = require("express");
 let router = express.Router();
 
 router.get("/courses-search",(req,resp)=>{
-    let {keyword}=req.query;
+    let {keyword,page_num=1,page_size=50}=req.query;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         t_courses.id,
@@ -28,7 +28,9 @@ router.get("/courses-search",(req,resp)=>{
         OR t_network_school.school_title LIKE ? 
         OR t_series_courses.title LIKE ? 
     ORDER BY
-        avg_score DESC;
+        avg_score DESC
+        LIMIT ${(page_num - 1) * page_size}, ${page_size};
+        ;
     `,["%"+keyword+"%","%"+keyword+"%","%"+keyword+"%","%"+keyword+"%"],"课程查询成功！")
 
 })
@@ -47,9 +49,12 @@ router.post("/course-count",(req,resp)=>{
         course_title LIKE ? 
         OR title LIKE ? 
         OR name LIKE ? 
-        OR school_title LIKE ? ;
+        OR school_title LIKE ? 
+        ;
     `,[""+keyword+"",""+keyword+"",""+keyword+"",""+keyword+"",""+keyword+""],"课程数量查询成功！")
 })
+
+
 
 
 
