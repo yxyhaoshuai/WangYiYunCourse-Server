@@ -9,8 +9,6 @@ router.get("/",(req,res)=>{
 
 })
 
-
-
 //下面的代码还有回头增加查询课程的功能
 //多级大纲列表查询
 router.get("/class_list",(req,resp)=>{
@@ -72,6 +70,19 @@ router.get("/home_series_course",(req,resp)=>{
         is_home_show = 1;
     `,[],"首页系列课程查询成功!")
 })
+
+router.get("/home_mini_ad",(req,resp)=>{
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        * 
+    FROM
+        t_mini_ad 
+    WHERE
+        is_home_show = 1;
+    `,[],"首页左侧小广告查询成功!")
+})
+
+
 
 
 
