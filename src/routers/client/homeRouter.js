@@ -1,14 +1,5 @@
 const express = require("express");
 let router = express.Router()
-
-//首页测试
-router.get("/",(req,res)=>{
-    res.send({
-        test:"成功"
-    })
-
-})
-
 //下面的代码还有回头增加查询课程的功能
 //多级大纲列表查询
 router.get("/class_list",(req,resp)=>{
@@ -81,10 +72,25 @@ router.get("/home_mini_ad",(req,resp)=>{
         is_home_show = 1;
     `,[],"首页左侧小广告查询成功!")
 })
+router.post("/set_interest",(req,resp)=>{
+    let {interest_array,student_id}= req.body;
+    interest_array =eval(interest_array)
+    resp.tool.execSQL(`
+    DELETE 
+    FROM
+        t_interest_recommend 
+    WHERE
+        student_id = ?;
+    `,[student_id]).then(result=>{
+        resp.tool.execSQLTEMPAutoResponse(`
+    INSERT INTO t_interest_recommend ( student_id, categorys_id )
+    VALUES
+        ${interest_array.map(item=>{
+            return "("+student_id+","+item+")"
+        })};
+    `,[],"我的兴趣插入成功!")
+    })
 
-
-
-
-
+})
 
 module.exports = router;
