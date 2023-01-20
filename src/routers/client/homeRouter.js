@@ -7,10 +7,28 @@ router.get("/class_list",(req,resp)=>{
     SELECT
         t_course_categorys.id,
         t_course_categorys.class_name AS class_name1,
-        a.class_name AS class_name2 
+        a.class_name AS class_name2,
+        courses_t.id AS courseid,
+        courses_t.img_url,
+        courses_t.course_title 
     FROM
         t_course_categorys
-    LEFT JOIN t_course_categorys AS a ON t_course_categorys.id = a.parent_id 
+    LEFT JOIN t_course_categorys AS a ON t_course_categorys.id = a.parent_id
+    LEFT JOIN (
+    SELECT
+        t_courses.id,
+        t_courses.course_title,
+        t_courses.img_url,
+        parentone.class_name AS one,
+        parentone.id AS categorysid 
+    FROM
+        t_courses
+    LEFT JOIN t_course_categorys ON t_courses.categorys_id = t_course_categorys.id
+    LEFT JOIN t_course_categorys AS parentone ON t_course_categorys.parent_id = parentone.id
+    LEFT JOIN t_special_course_categorys ON t_courses.special_course_categorys_id = t_special_course_categorys.id 
+    WHERE
+        t_special_course_categorys.class_name = "精选好课" 
+        ) AS courses_t ON a.id = courses_t.categorysid 
     WHERE
         t_course_categorys.id <= ?;
     `,[8],"多级大纲列表查询成功!")
