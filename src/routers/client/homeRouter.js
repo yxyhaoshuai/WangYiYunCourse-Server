@@ -57,7 +57,8 @@ router.get("/home_course_list",(req,resp)=>{
         t_teachers.name,
         b.class_name AS title,
         t_courses.price,
-        t_courses.special_course_categorys_id
+        t_courses.special_course_categorys_id,
+        t_courses.categorys_id
     FROM
         t_courses
     LEFT JOIN t_teachers ON t_courses.teacher_id = t_teachers.id
@@ -90,6 +91,9 @@ router.get("/home_mini_ad",(req,resp)=>{
         is_home_show = 1;
     `,[],"首页左侧小广告查询成功!")
 })
+
+
+//*注:添加兴趣后，前端再查询某一个用户id的所有兴趣所对应的分类id，然后前端根据查询出来的兴趣所对应id对查询的所有课程进行筛选，然后渲染到前端页面
 router.post("/set_interest",(req,resp)=>{
     let {interest_array,student_id}= req.body;
     interest_array =eval(interest_array)
@@ -110,5 +114,22 @@ router.post("/set_interest",(req,resp)=>{
     })
 
 })
+
+router.get("/interest_recommend/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        t_course_categorys.id,
+        t_course_categorys.class_name 
+    FROM
+        t_interest_recommend
+    LEFT JOIN t_course_categorys ON t_interest_recommend.categorys_id = t_course_categorys.id 
+    WHERE
+        student_id = ? 
+    LIMIT 6;
+    `,[id],"我的兴趣类别查询成功!")
+})
+
+
 
 module.exports = router;
