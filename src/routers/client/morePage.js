@@ -26,6 +26,8 @@ router.get("/all_OpenCourse",(req,resp)=>{
     `,[],"全部直播公开课查询成功!")
 })
 
+
+//*注：微专业这个模块未扩展
 router.get("/all_course_live",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
