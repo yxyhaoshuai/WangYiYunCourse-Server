@@ -2,37 +2,83 @@ const express = require("express");
 let router = express.Router()
 //下面的代码还有回头增加查询课程的功能
 //多级大纲列表查询
-router.get("/class_list",(req,resp)=>{
+// router.get("/class_list",(req,resp)=>{
+//     resp.tool.execSQLTEMPAutoResponse(`
+//     SELECT
+//         t_course_categorys.id,
+//         t_course_categorys.class_name AS class_name1,
+//         a.class_name AS class_name2,
+//         courses_t.id AS courseid,
+//         courses_t.img_url,
+//         courses_t.course_title
+//     FROM
+//         t_course_categorys
+//     LEFT JOIN t_course_categorys AS a ON t_course_categorys.id = a.parent_id
+//     LEFT JOIN (
+//     SELECT
+//         t_courses.id,
+//         t_courses.course_title,
+//         t_courses.img_url,
+//         parentone.class_name AS one,
+//         parentone.id AS categorysid
+//     FROM
+//         t_courses
+//     LEFT JOIN t_course_categorys ON t_courses.categorys_id = t_course_categorys.id
+//     LEFT JOIN t_course_categorys AS parentone ON t_course_categorys.parent_id = parentone.id
+//     LEFT JOIN t_special_course_categorys ON t_courses.special_course_categorys_id = t_special_course_categorys.id
+//     WHERE
+//         t_special_course_categorys.class_name = "精选好课"
+//         ) AS courses_t ON a.id = courses_t.categorysid
+//     WHERE
+//         t_course_categorys.id <= ?;
+//     `,[8],"多级大纲列表查询成功!")
+// })
+
+router.get("/class_list1",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
-        t_course_categorys.id,
-        t_course_categorys.class_name AS class_name1,
-        a.class_name AS class_name2,
-        courses_t.id AS courseid,
-        courses_t.img_url,
-        courses_t.course_title 
+        classone.id AS id1,
+        classone.class_name AS class_name1,
+        classtwo.id AS id2,
+        classtwo.class_name AS class_name2
+    FROM
+        t_course_categorys AS classone
+    LEFT JOIN t_course_categorys AS classtwo ON classone.id = classtwo.parent_id
+    WHERE
+        classone.id <= ?;
+    `,[8],"多级大纲列表查询成功!")
+})
+router.get("/class_list2",(req,resp)=>{
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        t_course_categorys.id as categoryid,
+        t_courses.id as courseid,
+        t_courses.course_title,
+        t_courses.img_url as course_img_url 
     FROM
         t_course_categorys
-    LEFT JOIN t_course_categorys AS a ON t_course_categorys.id = a.parent_id
-    LEFT JOIN (
-    SELECT
-        t_courses.id,
-        t_courses.course_title,
-        t_courses.img_url,
-        parentone.class_name AS one,
-        parentone.id AS categorysid 
-    FROM
-        t_courses
-    LEFT JOIN t_course_categorys ON t_courses.categorys_id = t_course_categorys.id
-    LEFT JOIN t_course_categorys AS parentone ON t_course_categorys.parent_id = parentone.id
-    LEFT JOIN t_special_course_categorys ON t_courses.special_course_categorys_id = t_special_course_categorys.id 
-    WHERE
-        t_special_course_categorys.class_name = "精选好课" 
-        ) AS courses_t ON a.id = courses_t.categorysid 
+    LEFT JOIN t_home_course_categorys ON t_course_categorys.id = t_home_course_categorys.course_categorys_course_id
+    LEFT JOIN t_courses ON t_home_course_categorys.categorys_course_course_id = t_courses.id 
     WHERE
         t_course_categorys.id <= ?;
     `,[8],"多级大纲列表查询成功!")
 })
+
+
+router.get("/class_list1",(req,resp)=>{
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        classone.id AS id1,
+        classone.class_name AS class_name1,
+        classtwo.id AS id2,
+        classtwo.class_name AS class_name2
+    FROM
+        t_course_categorys AS classone
+    LEFT JOIN t_course_categorys AS classtwo ON classone.id = classtwo.parent_id;
+    `,[],"多级大纲列表查询成功!")
+})
+
+
 
 //广告轮播图查询
 router.get("/ad",(req,resp)=>{
@@ -45,6 +91,7 @@ router.get("/ad",(req,resp)=>{
     `,[1],"首页广告轮播图查询成功！")
 })
 
+//首页课程列表
 router.get("/home_course_list",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
@@ -55,10 +102,14 @@ router.get("/home_course_list",(req,resp)=>{
         t_courses.course_title,
         t_courses.is_self_innovate,
         t_teachers.name,
+        t_teachers.header_url,
         b.class_name AS title,
         t_courses.price,
         t_courses.special_course_categorys_id,
-        t_courses.categorys_id
+        t_courses.categorys_id,
+        t_courses.is_live_open_course,
+        t_courses.course_intro,
+        t_courses.is_live
     FROM
         t_courses
     LEFT JOIN t_teachers ON t_courses.teacher_id = t_teachers.id
@@ -70,6 +121,8 @@ router.get("/home_course_list",(req,resp)=>{
     `,[],"首页课程查询成功!")
 })
 
+
+//首页系列课程列表
 router.get("/home_series_course",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
@@ -80,6 +133,7 @@ router.get("/home_series_course",(req,resp)=>{
         is_home_show = 1;
     `,[],"首页系列课程查询成功!")
 })
+
 
 router.get("/home_mini_ad",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`

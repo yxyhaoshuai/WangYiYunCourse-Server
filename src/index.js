@@ -66,6 +66,6 @@ app.use(handlerErrorMF(path.resolve(__dirname, "./defaultPages/500.html")))
 
 
 
-app.listen(3000,()=>{
-    console.log("网易云课堂服务器开启成功: localhost:3000/");
+app.listen(3001,()=>{
+    console.log("网易云课堂服务器开启成功: localhost:3001/");
 })

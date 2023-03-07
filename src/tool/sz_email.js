@@ -7,7 +7,7 @@ let transporter = nodemailer.createTransport({
     secure: true, // secure:true 对应 port 465, secure:false 对应 port 587
     auth: {
         user: '173198977@qq.com',
-        pass: 'svetngegelpdcajj' // QQ邮箱需要使用授权码, 163邮箱使用密码
+        pass: 'ddwunxcimbixbiei' // QQ邮箱需要使用授权码, 163邮箱使用密码
     }
 })
 

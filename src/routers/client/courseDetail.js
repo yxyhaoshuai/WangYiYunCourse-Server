@@ -148,7 +148,6 @@ router.post("/course/introduction/insertfavorite", (req, resp) => {
 })
 
 
-
 router.post("/course/introduction/courseinsertstatus",(req,resp)=>{
     const {student_id , course_list_id ,status} = req.body;
     resp.tool.execSQL(`

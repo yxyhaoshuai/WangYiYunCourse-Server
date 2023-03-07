@@ -172,6 +172,7 @@ router.get("/categorys_detail_nav_click2/:id",(req,resp)=>{
 })
 
 
+
 router.get("/categorys_detail_nav_click_opencourse/:id",(req,resp)=>{
     const {id} = req.params;
     console.log(id)

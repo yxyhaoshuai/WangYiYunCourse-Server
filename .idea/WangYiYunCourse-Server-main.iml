@@ -8,6 +8,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="wangYiYunCourse" />
+    <orderEntry type="module" module-name="WangYiYunCourse-Client-main" />
   </component>
 </module>

@@ -1,6 +1,7 @@
 const express = require("express");
 let router = express.Router();
 
+//课程搜索
 router.get("/courses-search",(req,resp)=>{
     let {keyword,page_num=1,page_size=50}=req.query;
     resp.tool.execSQLTEMPAutoResponse(`
@@ -35,6 +36,7 @@ router.get("/courses-search",(req,resp)=>{
 
 })
 
+// 课程搜索结果数量
 router.post("/course-count",(req,resp)=>{
     let {keyword}=req.body;
     resp.tool.execSQLTEMPAutoResponse(`
