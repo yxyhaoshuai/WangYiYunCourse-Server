@@ -55,6 +55,34 @@ router.post("/course-count",(req,resp)=>{
     `,[""+keyword+"",""+keyword+"",""+keyword+"",""+keyword+"",""+keyword+""],"课程数量查询成功！")
 })
 
+//
+router.get("/series-courses-search",(req,resp)=>{
+    let {keyword,page_num=1,page_size=50}=req.query;
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        t_series_courses.id,
+        t_series_courses.title,
+        t_series_courses.intro,
+        t_series_courses.series_fm_url 
+    FROM
+        t_courses
+    LEFT JOIN t_teachers ON t_teachers.id = t_courses.teacher_id
+    LEFT JOIN t_series_courses ON t_courses.series_course_id = t_series_courses.id
+    LEFT JOIN t_network_school ON t_teachers.school_id = t_network_school.id 
+    WHERE
+        t_series_courses.title LIKE ? 
+        OR t_teachers.NAME LIKE ? 
+        OR t_network_school.school_title LIKE ? 
+        OR t_courses.course_title LIKE ? 
+    GROUP BY
+        t_series_courses.id 
+    ORDER BY
+        t_series_courses.create_time DESC
+        LIMIT ${(page_num - 1) * page_size}, ${page_size};
+    `,["%"+keyword+"%","%"+keyword+"%","%"+keyword+"%","%"+keyword+"%"],"系列课程查询成功！")
+
+})
+
 
 
 
