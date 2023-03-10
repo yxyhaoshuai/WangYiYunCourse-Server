@@ -58,7 +58,11 @@ router.post("/course-count",(req,resp)=>{
 //
 router.get("/series-courses-search",(req,resp)=>{
     let {keyword,page_num=1,page_size=50}=req.query;
-    resp.tool.execSQLTEMPAutoResponse(`
+    if (keyword.length===0){
+        resp.send(resp.tool.ResponseTemp(-1,"关键字不能为空",[]))
+        resp.tool.ResponseTemp(-1,"关键字不能为空！",[])
+    }else {
+        resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         t_series_courses.id,
         t_series_courses.title,
@@ -80,7 +84,7 @@ router.get("/series-courses-search",(req,resp)=>{
         t_series_courses.create_time DESC
         LIMIT ${(page_num - 1) * page_size}, ${page_size};
     `,["%"+keyword+"%","%"+keyword+"%","%"+keyword+"%","%"+keyword+"%"],"系列课程查询成功！")
-
+    }
 })
 
 
