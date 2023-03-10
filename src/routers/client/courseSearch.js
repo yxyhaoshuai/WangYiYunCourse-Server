@@ -16,8 +16,8 @@ router.get("/courses-search",(req,resp)=>{
         t_network_school.school_title,
         t_series_courses.title 
     FROM
-        t_comment
-        LEFT JOIN t_courses ON t_comment.course_id = t_courses.id
+        t_courses
+        LEFT JOIN t_comment ON t_comment.course_id = t_courses.id
         LEFT JOIN t_series_courses ON t_courses.series_course_id = t_series_courses.id
         LEFT JOIN t_teachers ON t_courses.teacher_id = t_teachers.id
         LEFT JOIN t_network_school ON t_teachers.school_id = t_network_school.id 
@@ -31,7 +31,6 @@ router.get("/courses-search",(req,resp)=>{
     ORDER BY
         avg_score DESC
         LIMIT ${(page_num - 1) * page_size}, ${page_size};
-        ;
     `,["%"+keyword+"%","%"+keyword+"%","%"+keyword+"%","%"+keyword+"%"],"课程查询成功！")
 
 })
