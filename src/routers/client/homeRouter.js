@@ -95,29 +95,29 @@ router.get("/ad",(req,resp)=>{
 router.get("/home_course_list",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
-        t_courses.id,
+        t_special_course_categorys.id as specialid,
+        t_courses.id AS courseid,
+        t_courses.course_title,
+        t_courses.price,
         t_courses.img_url,
         t_courses.learning_time,
-        t_courses.stop_time,
-        t_courses.course_title,
+        t_courses.is_live,
+        t_courses.course_intro,
         t_courses.is_self_innovate,
+        is_special_home_show,
         t_teachers.name,
         t_teachers.header_url,
-        b.class_name AS title,
-        t_courses.price,
-        t_courses.special_course_categorys_id,
-        t_courses.categorys_id,
-        t_courses.is_live_open_course,
-        t_courses.course_intro,
-        t_courses.is_live
+        class1.class_name 
     FROM
-        t_courses
+        t_special_course_categorys
+    LEFT JOIN t_home_course_special ON t_special_course_categorys.id = t_home_course_special.special_course_category_id
+    LEFT JOIN t_courses ON t_courses.id = t_home_course_special.course_id
     LEFT JOIN t_teachers ON t_courses.teacher_id = t_teachers.id
-    LEFT JOIN t_course_categorys ON t_courses.categorys_id = t_course_categorys.id
-    LEFT JOIN t_course_categorys AS a ON t_course_categorys.parent_id = a.id
-    LEFT JOIN t_course_categorys AS b ON a.parent_id = b.id 
+    LEFT JOIN t_course_categorys AS class3 ON class3.id = t_courses.categorys_id
+    LEFT JOIN t_course_categorys AS class2 ON class3.parent_id = class2.id
+    LEFT JOIN t_course_categorys as class1 on class1.id = class2.parent_id 
     WHERE
-        t_courses.is_special_home_show = 1 ;
+        t_courses.id IS NOT NULL;
     `,[],"首页课程查询成功!")
 })
 
