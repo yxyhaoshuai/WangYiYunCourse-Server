@@ -96,7 +96,7 @@ router.get("/remove_cart",(req,resp)=>{
     WHERE
         courses_id = ? 
         AND students_id = ?;
-    `,[course_id,student_id],"我的购物车移除成功！")
+    `,[parseInt(course_id),parseInt(student_id)],"我的购物车移除成功！")
 })
 
 
