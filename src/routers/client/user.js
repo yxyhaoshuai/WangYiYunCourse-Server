@@ -71,7 +71,6 @@ router.post("/login", (req, resp) => {
 //我的购物车查询
 router.get("/my_cart/:id",(req,resp)=>{
     const {id} = req.params;
-    console.log(id)
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         t_courses.id,
@@ -88,7 +87,7 @@ router.get("/my_cart/:id",(req,resp)=>{
 
 //删除我的购物车
 router.get("/remove_cart",(req,resp)=>{
-    const {student_id,course_id} = req.query;
+    const {course_id,student_id} = req.query;
     resp.tool.execSQLTEMPAutoResponse(`
     DELETE 
     FROM
