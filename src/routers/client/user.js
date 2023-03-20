@@ -119,6 +119,8 @@ router.get("/mystudy/:id",(req,resp)=>{
     `,[id],"我的学习查询成功!")
 })
 
+//上面的接口将要和下面的接口合并，并且上面的接口和前端都已渲染完毕
+
 
 //我的学习界面(已学习)
 router.get("/mystudylater",(req,resp)=>{
@@ -142,9 +144,10 @@ router.get("/my_collect/:id",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         t_courses.id,
-        t_courses.img_url,
-        t_courses.course_title,
+        t_courses.img_url as series_fm_url,
+        t_courses.course_title as title,
         t_courses.price,
+        t_courses.course_intro as intro,
         ROUND( AVG( score ), 1 ) as avg_score 
     FROM
         t_favorite
