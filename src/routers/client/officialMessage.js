@@ -6,7 +6,8 @@ router.get("/officialMessage",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         official_notice,
-        create_time 
+        create_time,
+        id 
     FROM
         t_office_notice 
     ORDER BY
