@@ -24,7 +24,8 @@ router.get("/courses-search",(req,resp)=>{
             FROM
                 t_courses
                 LEFT JOIN t_comment ON t_comment.course_id = t_courses.id
-                LEFT JOIN t_series_courses ON t_courses.series_course_id = t_series_courses.id
+                LEFT JOIN t_series_courses_son ON t_courses.series_courses_son_id = t_series_courses_son.id
+                LEFT JOIN t_series_courses ON t_series_courses_son.series_courses_id = t_series_courses.id
                 LEFT JOIN t_teachers ON t_courses.teacher_id = t_teachers.id
                 LEFT JOIN t_network_school ON t_teachers.school_id = t_network_school.id 
             GROUP BY
@@ -64,11 +65,8 @@ router.get("/courses-search",(req,resp)=>{
 //搜索系列课程
 router.get("/series-courses-search",(req,resp)=>{
     let {keyword,page_num=1,page_size=50}=req.query;
-    if (keyword.length===0){
-        resp.send(resp.tool.ResponseTemp(-1,"关键字不能为空",[]))
-        resp.tool.ResponseTemp(-1,"关键字不能为空！",[])
-    }else {
-        resp.tool.execSQLTEMPAutoResponse(`
+    console.log(keyword)
+    resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         t_series_courses.id,
         t_series_courses.title,
@@ -77,7 +75,8 @@ router.get("/series-courses-search",(req,resp)=>{
     FROM
         t_courses
     LEFT JOIN t_teachers ON t_teachers.id = t_courses.teacher_id
-    LEFT JOIN t_series_courses ON t_courses.series_course_id = t_series_courses.id
+    LEFT JOIN t_series_courses_son ON t_courses.series_courses_son_id = t_series_courses_son.id
+    LEFT JOIN t_series_courses ON t_series_courses_son.series_courses_id = t_series_courses.id
     LEFT JOIN t_network_school ON t_teachers.school_id = t_network_school.id 
     WHERE
         t_series_courses.title LIKE ? 
@@ -90,7 +89,7 @@ router.get("/series-courses-search",(req,resp)=>{
         t_series_courses.create_time DESC
         LIMIT ${(page_num - 1) * page_size}, ${page_size};
     `,["%"+keyword+"%","%"+keyword+"%","%"+keyword+"%","%"+keyword+"%"],"系列课程查询成功！")
-    }
+
 })
 
 

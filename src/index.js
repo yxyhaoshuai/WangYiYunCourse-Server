@@ -14,6 +14,7 @@ const officialMessage = require("./routers/client/officialMessage")
 const user = require("./routers/client/user")
 const liveOpenClass = require("./routers/client/morePage")
 const categorysDetail = require("./routers/client/categorysDetail")
+const seriesCourseDetail = require("./routers/client/seriesCourseDetail")
 
 
 
@@ -52,6 +53,7 @@ app.use("/",officialMessage)
 app.use("/",user)
 app.use("/",liveOpenClass)
 app.use("/",categorysDetail)
+app.use("/",seriesCourseDetail)
 
 
 
