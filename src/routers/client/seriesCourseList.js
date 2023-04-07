@@ -1,7 +1,7 @@
 const express = require("express");
 let router = express.Router();
 
-
+//全部系列课程列表
 router.get("/all-series-ourse",(req,resp)=>{
     let {page_num=1,page_size=9}=req.query;
     resp.tool.execSQLTEMPAutoResponse(`
@@ -19,6 +19,16 @@ router.get("/all-series-ourse",(req,resp)=>{
 })
 
 
+
+//系列课程总数
+router.get("/all-series-ourse-total",(req,resp)=>{
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            COUNT(id) as seriesTotal
+        FROM
+            t_series_courses;
+    `,[],"系列课程列表总数查询成功！")
+})
 
 
 module.exports = router;
