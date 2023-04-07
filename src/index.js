@@ -15,6 +15,7 @@ const user = require("./routers/client/user")
 const liveOpenClass = require("./routers/client/morePage")
 const categorysDetail = require("./routers/client/categorysDetail")
 const seriesCourseDetail = require("./routers/client/seriesCourseDetail")
+const allSeriesCourseList = require("./routers/client/allSeriesCourseList")
 
 
 
@@ -54,6 +55,7 @@ app.use("/",user)
 app.use("/",liveOpenClass)
 app.use("/",categorysDetail)
 app.use("/",seriesCourseDetail)
+app.use("/",allSeriesCourseList)
 
 
 
