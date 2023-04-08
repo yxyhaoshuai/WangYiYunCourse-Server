@@ -7,7 +7,6 @@ let router = express.Router();
 // 1. 注册接口
 router.post("/register", (req, resp) => {
     const {account, password} = req.body;
-
     // 1. 账号重名检测
     resp.tool.execSQL(`select id from t_students where account=?;`, [account]).then(result => {
         if (result.length > 0) {
@@ -16,23 +15,24 @@ router.post("/register", (req, resp) => {
             //回头测试下面代码，有可能是int类型也有可能是字符串类型
             let nick_name = "用户"+Math.floor(Date.now());
             let header_url = "/images/user/xl.jpg";
-            let student_intro = "我要做爱学习的人！";
+            let intro = "我要做爱学习的人！";
             resp.tool.execSQLTEMPAutoResponse(`
-                insert into t_students (account, password, nick_name, header_url ,student_intro) values (?, ?, ?, ?, ?);
-            `, [account, password, nick_name, header_url, student_intro], "注册成功!", result => {
+                insert into t_students (account, password, nick_name, header_url ,intro) values (?, ?, ?, ?, ?);
+            `, [account, password, nick_name, header_url, intro], "注册成功!", result => {
                 if (result.affectedRows > 0) {
                     return {
                         id: result.insertId,
                         account,
                         nick_name,
                         header_url,
-                        student_intro
+                        intro
                     }
                 }
             })
         }
     })
 })
+
 
 // 2. 登录接口
 router.post("/login", (req, resp) => {
