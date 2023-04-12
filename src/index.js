@@ -16,6 +16,7 @@ const liveOpenClass = require("./routers/client/morePage")
 const categorysDetail = require("./routers/client/categorysDetail")
 const seriesCourseDetail = require("./routers/client/seriesCourseDetail")
 const seriesCourseList = require("./routers/client/seriesCourseList")
+const orderPage = require("./routers/client/orderPage")
 
 
 
@@ -56,6 +57,7 @@ app.use("/",liveOpenClass)
 app.use("/",categorysDetail)
 app.use("/",seriesCourseDetail)
 app.use("/",seriesCourseList)
+app.use("/",orderPage)
 
 
 

@@ -152,7 +152,6 @@ router.post("/course/introduction/insertfavorite", (req, resp) => {
 //收藏多个课程
 router.post("/course/introduction/insertfavorites", (req, resp) => {
     const {courseIdArray, student_id} = req.body;
-    const newCourseIdArray = JSON.parse(courseIdArray);
     //查看是否收藏过
     resp.tool.execSQL(`
         SELECT
@@ -170,7 +169,7 @@ router.post("/course/introduction/insertfavorites", (req, resp) => {
             `).then((result) => {
                 if (result.affectedRows > 0) {
                     resp.tool.execSQLTEMPAutoResponse(`
-                        INSERT INTO t_favorite ( course_id, student_id ) VALUES ${newCourseIdArray.map(item=>{
+                        INSERT INTO t_favorite ( course_id, student_id ) VALUES ${courseIdArray.map(item=>{
                             return "("+item+","+student_id+")"
                     })};
             `,[],"系列课程中的子课程插入成功！")
@@ -178,7 +177,7 @@ router.post("/course/introduction/insertfavorites", (req, resp) => {
             })
         } else {
             resp.tool.execSQLTEMPAutoResponse(`
-            INSERT INTO t_favorite ( course_id, student_id ) VALUES ${newCourseIdArray.map(item=>{
+            INSERT INTO t_favorite ( course_id, student_id ) VALUES ${courseIdArray.map(item=>{
             return "("+item+","+student_id+")"
         })};
             `, [], "系列课里的子课程成功！")
