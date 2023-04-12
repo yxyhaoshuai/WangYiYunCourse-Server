@@ -1,8 +1,8 @@
 const express = require("express");
 let router = express.Router();
 
-router.get("/course/introduction/crumbs/:id",(req,resp)=>{
-    const {id}=req.params;
+router.get("/course/introduction/crumbs/:id", (req, resp) => {
+    const {id} = req.params;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         t_courses.id,
@@ -16,12 +16,12 @@ router.get("/course/introduction/crumbs/:id",(req,resp)=>{
         LEFT JOIN t_course_categorys AS c ON b.parent_id = c.id 
     WHERE
         t_courses.id = ?;
-    `,[id],"面包屑导航查询成功！")
+    `, [id], "面包屑导航查询成功！")
 
 
 })
 
-router.get("/course/introduction/:id",(req,resp)=>{
+router.get("/course/introduction/:id", (req, resp) => {
     const {id} = req.params;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
@@ -59,10 +59,10 @@ router.get("/course/introduction/:id",(req,resp)=>{
         a.id 
     HAVING
         a.id = ?;
-    `,[id],"课程详情查询成功！")
+    `, [id], "课程详情查询成功！")
 })
 
-router.get("/course/introduction/comment/:id",(req,resp)=>{
+router.get("/course/introduction/comment/:id", (req, resp) => {
     const {id} = req.params;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
@@ -77,11 +77,11 @@ router.get("/course/introduction/comment/:id",(req,resp)=>{
     LEFT JOIN t_students ON t_comment.student_id = t_students.id 
     WHERE
         t_comment.course_id = ?;
-    `,[id],"课程详情评论查询成功！")
+    `, [id], "课程详情评论查询成功！")
 })
 
 
-router.get("/course/introduction/course_item/:id",(req,resp)=>{
+router.get("/course/introduction/course_item/:id", (req, resp) => {
     const {id} = req.params;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
@@ -92,20 +92,20 @@ router.get("/course/introduction/course_item/:id",(req,resp)=>{
         course_id = ? 
     ORDER BY
         t_course_list.id ASC;
-    `,[id],"课时条目查询成功！")
+    `, [id], "课时条目查询成功！")
 })
 
 router.post("/course/introduction/insertcomment", (req, resp) => {
-    const {course_id, student_id, content,score} = req.body;
+    const {course_id, student_id, content, score} = req.body;
 
     //查看是否评论过
-    resp.tool.execSQL(`select id from t_comment where student_id=? and course_id=?;`, [student_id,course_id]).then(result => {
+    resp.tool.execSQL(`select id from t_comment where student_id=? and course_id=?;`, [student_id, course_id]).then(result => {
         if (result.length > 0) {
             resp.send(resp.tool.ResponseTemp(-1, "每个人只能评论一次哦!", {}))
         } else {
             resp.tool.execSQLTEMPAutoResponse(`
         INSERT INTO t_comment(course_id,student_id,content,score) VALUES(?,?,?,?);
-    `, [course_id, student_id, content,score], "评论成功!", result=>{
+    `, [course_id, student_id, content, score], "评论成功!", result => {
                 if (result.affectedRows > 0) {
                     return {
                         message: "评论成功!"
@@ -121,18 +121,19 @@ router.post("/course/introduction/insertcomment", (req, resp) => {
 })
 
 
+//收藏单个课程
 router.post("/course/introduction/insertfavorite", (req, resp) => {
     const {course_id, student_id} = req.body;
+    console.log(course_id, student_id)
 
     //查看是否收藏过
-    resp.tool.execSQL(`select id from t_favorite where student_id=? and course_id=?;`, [student_id,course_id]).then(result => {
-        console.log(result)
+    resp.tool.execSQL(`select id from t_favorite where student_id=? and course_id=?;`, [student_id, course_id]).then(result => {
         if (result.length > 0) {
             resp.send(resp.tool.ResponseTemp(-1, "您已经收藏过了哦！", {}))
         } else {
             resp.tool.execSQLTEMPAutoResponse(`
         INSERT INTO t_favorite(course_id,student_id) VALUES(?,?);
-    `, [course_id, student_id], "收藏成功!", result=>{
+    `, [course_id, student_id], "收藏成功!", result => {
                 if (result.affectedRows > 0) {
                     return {
                         message: "收藏成功!"
@@ -148,38 +149,76 @@ router.post("/course/introduction/insertfavorite", (req, resp) => {
 })
 
 
-router.post("/course/introduction/courseinsertstatus",(req,resp)=>{
-    const {student_id , course_list_id ,status} = req.body;
+//收藏多个课程
+router.post("/course/introduction/insertfavorites", (req, resp) => {
+    const {courseIdArray, student_id} = req.body;
+    const newCourseIdArray = JSON.parse(courseIdArray);
+    //查看是否收藏过
     resp.tool.execSQL(`
-        SELECT * FROM t_student_study_history WHERE student_id = ? and course_list_id = ?;
-    `,[student_id,course_list_id]).then(result=>{
-        if (result.length > 0){
+        SELECT
+            * 
+        FROM
+            t_favorite 
+        WHERE
+            student_id = ?;
+`, [student_id]).then(result => {
+        if (result.length > 0) {
+            resp.tool.execSQL(`
+                DELETE FROM t_favorite WHERE id IN (${result.map(item=>{
+                    return item.id
+                })});
+            `).then((result) => {
+                if (result.affectedRows > 0) {
+                    resp.tool.execSQLTEMPAutoResponse(`
+                        INSERT INTO t_favorite ( course_id, student_id ) VALUES ${newCourseIdArray.map(item=>{
+                            return "("+item+","+student_id+")"
+                    })};
+            `,[],"系列课程中的子课程插入成功！")
+                }
+            })
+        } else {
             resp.tool.execSQLTEMPAutoResponse(`
-                UPDATE t_student_study_history set status=? WHERE student_id = ? and course_list_id = ?;
-            `,[status,student_id,course_list_id],"学习历史状态修改成功！")
-        }else {
-            resp.tool.execSQLTEMPAutoResponse(`
-            INSERT INTO t_student_study_history ( t_student_study_history.student_id, t_student_study_history.course_list_id, t_student_study_history.status )
-            VALUES
-                ( ?, ?, ? );
-            `,[student_id,course_list_id,status],"学习状态记录成功！")
+            INSERT INTO t_favorite ( course_id, student_id ) VALUES ${newCourseIdArray.map(item=>{
+            return "("+item+","+student_id+")"
+        })};
+            `, [], "系列课里的子课程成功！")
         }
     })
 })
 
-router.post("/course/introduction/insertcart",(req,resp)=>{
-    const {courses_id,students_id} = req.body;
+
+router.post("/course/introduction/courseinsertstatus", (req, resp) => {
+    const {student_id, course_list_id, status} = req.body;
+    resp.tool.execSQL(`
+        SELECT * FROM t_student_study_history WHERE student_id = ? and course_list_id = ?;
+    `, [student_id, course_list_id]).then(result => {
+        if (result.length > 0) {
+            resp.tool.execSQLTEMPAutoResponse(`
+                UPDATE t_student_study_history set status=? WHERE student_id = ? and course_list_id = ?;
+            `, [status, student_id, course_list_id], "学习历史状态修改成功！")
+        } else {
+            resp.tool.execSQLTEMPAutoResponse(`
+            INSERT INTO t_student_study_history ( t_student_study_history.student_id, t_student_study_history.course_list_id, t_student_study_history.status )
+            VALUES
+                ( ?, ?, ? );
+            `, [student_id, course_list_id, status], "学习状态记录成功！")
+        }
+    })
+})
+
+router.post("/course/introduction/insertcart", (req, resp) => {
+    const {courses_id, students_id} = req.body;
     resp.tool.execSQL(`
     SELECT * FROM t_cart WHERE courses_id = ? and students_id = ?;
-    `,[courses_id,students_id]).then(result=>{
-        if (result.length >0){
-            resp.send(resp.tool.ResponseTemp(-1,"亲，您加入过购物车了哦",{}))
-        }else {
+    `, [courses_id, students_id]).then(result => {
+        if (result.length > 0) {
+            resp.send(resp.tool.ResponseTemp(-1, "亲，您加入过购物车了哦", {}))
+        } else {
             resp.tool.execSQLTEMPAutoResponse(`
                 INSERT INTO t_cart ( courses_id, students_id )
                 VALUES
                     ( ?, ? );
-            `,[courses_id,students_id],"加入购物车成功！")
+            `, [courses_id, students_id], "加入购物车成功！")
         }
     })
 })

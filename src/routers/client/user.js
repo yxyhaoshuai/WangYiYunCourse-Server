@@ -14,7 +14,7 @@ router.post("/register", (req, resp) => {
         } else {
             //回头测试下面代码，有可能是int类型也有可能是字符串类型
             let nick_name = "用户"+Math.floor(Date.now());
-            let header_url = "/images/user/xl.jpg";
+            let header_url = "/images/user/newUser.jpg";
             let intro = "我要做爱学习的人！";
             resp.tool.execSQLTEMPAutoResponse(`
                 insert into t_students (account, password, nick_name, header_url ,intro) values (?, ?, ?, ?, ?);
@@ -37,9 +37,8 @@ router.post("/register", (req, resp) => {
 // 2. 登录接口
 router.post("/login", (req, resp) => {
     const {account, password} = req.body;
-    console.log("这")
     resp.tool.execSQLTEMPAutoResponse(`
-        select id, account, nick_name, header_url, student_intro from t_students where account=? and password=?;
+        select id, account, nick_name, header_url, intro from t_students where account=? and password=?;
     `, [account, password], "验证成功!", result => {
         if (result.length > 0) {
             return result[0]
