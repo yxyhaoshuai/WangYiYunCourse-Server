@@ -211,7 +211,7 @@ router.post("/course/introduction/insertcart", (req, resp) => {
     SELECT * FROM t_cart WHERE courses_id = ? and students_id = ?;
     `, [courses_id, students_id]).then(result => {
         if (result.length > 0) {
-            resp.send(resp.tool.ResponseTemp(-1, "亲，您加入过购物车了哦", {}))
+            resp.send(resp.tool.ResponseTemp(-1, "您已经加入过购物车了！", {}))
         } else {
             resp.tool.execSQLTEMPAutoResponse(`
                 INSERT INTO t_cart ( courses_id, students_id )

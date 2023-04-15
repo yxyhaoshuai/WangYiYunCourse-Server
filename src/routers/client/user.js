@@ -38,7 +38,7 @@ router.post("/register", (req, resp) => {
 router.post("/login", (req, resp) => {
     const {account, password} = req.body;
     resp.tool.execSQLTEMPAutoResponse(`
-        select id, account, nick_name, header_url, intro from t_students where account=? and password=?;
+        select id, account, nick_name, header_url, intro, phone_number from t_students where account=? and password=?;
     `, [account, password], "验证成功!", result => {
         if (result.length > 0) {
             return result[0]
