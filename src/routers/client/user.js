@@ -310,5 +310,20 @@ router.post("/update_address", (req, resp)=>{
     })
 })
 
+//8.获取其他用户信息
+router.post("/other_people_data", (req, resp)=>{
+    const {student_id} = req.body;
+    console.log(student_id)
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            id,
+            nick_name,
+            header_url,
+            intro 
+        FROM
+            t_students WHERE id = ?;
+    `, [student_id], "其他用户的信息接口开发完毕！")
+})
+
 
 module.exports = router;
