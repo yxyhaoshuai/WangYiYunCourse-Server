@@ -5,9 +5,12 @@ router.get("/course/introduction/crumbs/:id", (req, resp) => {
     const {id} = req.params;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
-        t_courses.id,
+        t_courses.id AS courseId,
+        c.id AS classoneId,
         c.class_name AS classone,
+        b.id AS classtwoId,
         b.class_name AS classtwo,
+        a.id AS classthreeId,
         a.class_name AS classthree
     FROM
         t_courses
