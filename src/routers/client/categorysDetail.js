@@ -95,17 +95,21 @@ router.get("/new_course/:id",(req,resp)=>{
     `,[id],"新课推荐查询成功!")
 })
 
-router.get("/open_course/:id",(req,resp)=>{
+
+//category页面全部直播公开课
+router.get("/open_course_all/:id",(req,resp)=>{
     const {id} = req.params;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
-        t_courses.id,
+        t_courses.id as courseId,
         t_courses.img_url,
         t_courses.learning_time,
         t_courses.is_self_innovate,
         t_courses.course_title,
         t_teachers.name,
-        t_courses.course_intro
+        t_teachers.label,
+        t_courses.course_intro,
+        c.class_name
     FROM
         t_courses
     LEFT JOIN t_course_categorys AS a ON t_courses.categorys_id = a.id
@@ -115,8 +119,37 @@ router.get("/open_course/:id",(req,resp)=>{
     WHERE
         c.id = ? 
         AND t_courses.is_live_open_course = 1;
-    `,[id],"直播公开课查询成功!")
+    `,[id],"全部直播公开课查询成功!")
 })
+
+
+//category页面部分直播公开课
+router.get("/open_course_part/:id",(req,resp)=>{
+    const {id} = req.params;
+    console.log(id)
+    resp.tool.execSQLTEMPAutoResponse(`
+    SELECT
+        t_courses.id as courseId,
+        t_courses.img_url,
+        t_courses.learning_time,
+        t_courses.is_self_innovate,
+        t_courses.course_title,
+        t_teachers.name,
+        t_teachers.label,
+        t_courses.course_intro,
+        c.class_name
+    FROM
+        t_courses
+    LEFT JOIN t_course_categorys AS a ON t_courses.categorys_id = a.id
+    LEFT JOIN t_course_categorys AS b ON a.parent_id = b.id
+    LEFT JOIN t_course_categorys AS c ON b.parent_id = c.id
+    LEFT JOIN t_teachers on t_courses.teacher_id = t_teachers.id
+    WHERE
+        b.id = ? 
+        AND t_courses.is_live_open_course = 1;
+    `,[id],"部分直播公开课查询成功!")
+})
+
 
 router.get("/categorys_detail_ad/:id",(req,resp)=>{
     const {id} = req.params;
