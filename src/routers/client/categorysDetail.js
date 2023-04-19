@@ -230,4 +230,114 @@ router.get("/categorys_detail_nav_click_opencourse/:id",(req,resp)=>{
     `,[id],"直播公开课查询成功!")
 })
 
+
+//精选
+router.get("/categorys_children_categorys/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQL(`
+        SELECT
+            t_course_categorys.id AS classOneId,
+            t_category_pages_son.id AS classTwoId,
+            t_category_pages_son.categories_son_name AS sonName 
+        FROM
+            t_category_pages_son
+        LEFT JOIN t_course_categorys ON t_category_pages_son.course_category_id = t_course_categorys.id 
+        WHERE
+            t_course_categorys.id = ?;
+    `,[id]).then((result)=>{
+        if (result.length > 0){
+            let data = [];
+            let promises = result.map((item)=>{
+                return resp.tool.execSQL(`
+                    SELECT
+                        t_category_pages_son.id AS sonId,
+                        t_courses.id AS courseId,
+                        t_courses.img_url,
+                        t_courses.is_self_innovate,
+                        t_courses.course_title,
+                        t_courses.price,
+                        ROUND( AVG( t_comment.score ), 1 ) AS score
+                    FROM
+                        t_courses
+                    LEFT JOIN t_category_pages_son ON t_courses.category_pages_son_id = t_category_pages_son.id
+                    LEFT JOIN t_comment ON t_courses.id = t_comment.course_id 
+                    GROUP BY
+                        courseId 
+                    HAVING
+                        t_category_pages_son.id = ?;
+                `,[item.classTwoId]).then((result2)=>{
+                    let row = JSON.parse(JSON.stringify(item));
+                    row.courses = result2;
+                    data.push(row);
+                })
+            })
+            Promise.all(promises).then(()=>{
+                resp.send(
+                    resp.tool.ResponseTemp(0, "页面子分类和课程查询成功！", data)
+                );
+            });
+        } else {
+            resp.send(resp.tool.ResponseTemp(0, "课程列表为空！", result));
+        }
+    });
+});
+
+//非精选
+router.get("/categorys_children_categorys_son/:id",(req,resp)=>{
+    const {id} = req.params;
+    console.log(id)
+    resp.tool.execSQL(`
+        SELECT
+            b.id AS classOneId,
+            c.id AS classTowId,
+            c.class_name AS sonName 
+        FROM
+            t_course_categorys AS a
+        LEFT JOIN t_course_categorys AS b ON a.id = b.parent_id
+        LEFT JOIN t_course_categorys AS c ON b.id = c.parent_id 
+        WHERE
+            b.id = ?;
+    `,[id]).then((result)=>{
+        if (result.length > 0 ){
+            let data = [];
+            let promises = result.map((item)=>{
+                return resp.tool.execSQL(`
+                    SELECT
+                        t_course_categorys.id,
+                        t_courses.id AS courseId,
+                        t_courses.img_url,
+                        t_courses.is_self_innovate,
+                        t_courses.course_title,
+                        t_courses.price,
+                        ROUND( AVG( t_comment.score ), 1 ) AS score 
+                    FROM
+                        t_courses
+                    LEFT JOIN t_course_categorys ON t_courses.categorys_id = t_course_categorys.id
+                    LEFT JOIN t_comment ON t_courses.id = t_comment.course_id 
+                    GROUP BY
+                        courseId 
+                    HAVING
+                        t_course_categorys.id = ?
+                        ORDER BY
+                            t_comment.score DESC 
+                    LIMIT 10;
+                `,[item.classTowId]).then((result2)=>{
+                    let row = JSON.parse(JSON.stringify(item));
+                    row.courses = result2;
+                    data.push(row);
+                })
+            })
+            Promise.all(promises).then(()=>{
+                resp.send(
+                    resp.tool.ResponseTemp(0,"页面子分类和课程查询成功！",data)
+                );
+            });
+        } else {
+            resp.send(resp.tool.ResponseTemp(0, "课程列表为空！", result));
+        }
+    });
+
+});
+
+
 module.exports = router;
