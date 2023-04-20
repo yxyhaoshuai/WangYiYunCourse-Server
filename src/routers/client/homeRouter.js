@@ -120,11 +120,11 @@ router.post("/set_interest",(req,resp)=>{
     let {interest_array,student_id}= req.body;
     interest_array =eval(interest_array);
     resp.tool.execSQL(`
-    DELETE 
-    FROM
-        t_interest_recommend 
-    WHERE
-        student_id = ?;
+        DELETE 
+        FROM
+            t_interest_recommend 
+        WHERE
+            student_id = ?;
     `,[student_id]).then(result=>{
         resp.tool.execSQLTEMPAutoResponse(`
     INSERT INTO t_interest_recommend ( student_id, categorys_id )
