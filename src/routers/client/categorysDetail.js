@@ -339,5 +339,31 @@ router.get("/categorys_children_categorys_son/:id",(req,resp)=>{
 
 });
 
+//二级分类下所有课程的查询
+router.get("/class-two-course",(req,resp)=>{
+    const {id,orderBy} = req.query;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            t_courses.id AS courseId,
+            t_courses.img_url,
+            t_courses.is_self_innovate,
+            t_courses.course_title,
+            t_courses.price,
+            ROUND( AVG( t_comment.score ), 1 ) AS score,
+            COUNT( DISTINCT t_have_bought.id ) AS studyCount 
+        FROM
+            t_courses
+        LEFT JOIN t_course_categorys ON t_courses.categorys_id = t_course_categorys.id
+        LEFT JOIN t_comment ON t_courses.id = t_comment.course_id
+        LEFT JOIN t_have_bought ON t_courses.id = t_have_bought.course_id 
+        WHERE
+            parent_id = ? 
+        GROUP BY
+            t_courses.id 
+        ORDER BY
+            ${orderBy} DESC;
+    `,[id],"二级分类所有课程查询成功！")
+})
+
 
 module.exports = router;
