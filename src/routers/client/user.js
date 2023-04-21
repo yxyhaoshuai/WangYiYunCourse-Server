@@ -124,18 +124,26 @@ router.get("/mystudy/:id",(req,resp)=>{
 //我的学习界面(已学习)
 router.get("/mystudylater",(req,resp)=>{
     const {student_id,course_id} = req.query;
-    resp.tool.execSQLTEMPAutoResponse(`
-    SELECT
-        COUNT( t_student_study_history.id ) as studycount 
-    FROM
-        t_student_study_history
-    LEFT JOIN t_course_list ON t_student_study_history.course_list_id = t_course_list.id 
-    WHERE
-        student_id = ? 
-    AND course_id = ?
-    AND status = 2
-    ;
-    `,[student_id,course_id],"我已学习某课程数量查询成功!")
+    resp.tool.execSQL(`
+        SELECT
+            COUNT( t_student_study_history.id ) as studycount 
+        FROM
+            t_student_study_history
+        LEFT JOIN t_course_list ON t_student_study_history.course_list_id = t_course_list.id 
+        WHERE
+            student_id = ? 
+        AND course_id = ?
+        AND status = 2;
+    `,[student_id,course_id]).then((result)=>{
+            resp.tool.execSQL(`
+            SELECT
+                COUNT(id) as total 
+            FROM
+                t_course_list
+            WHERE course_id = ?;`,[course_id]).then((result2)=>{
+                resp.send(resp.tool.ResponseTemp(0,"查询学生已学习某课程数和课程总数查询成功！",[result[0],result2[0]]))
+            })
+    })
 })
 
 router.get("/my_collect/:id",(req,resp)=>{

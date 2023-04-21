@@ -20,8 +20,6 @@ router.get("/course/introduction/crumbs/:id", (req, resp) => {
     WHERE
         t_courses.id = ?;
     `, [id], "面包屑导航查询成功！")
-
-
 })
 
 router.get("/course/introduction/:id", (req, resp) => {
