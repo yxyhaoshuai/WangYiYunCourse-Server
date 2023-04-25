@@ -223,5 +223,44 @@ router.post("/course/introduction/insertcart", (req, resp) => {
     })
 })
 
+// 4. 课程大纲
+router.get("/outline", (req, resp) => {
+    const {courseId,student_id} = req.query;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            t_course_list.id,
+            t_course_list.num,
+            t_course_list.title,
+            t_course_list.video_url,
+            t_student_study_history.status
+        FROM
+            t_course_list
+        LEFT JOIN t_student_study_history on  t_course_list.id = t_student_study_history.course_list_id
+        WHERE
+            t_course_list.course_id = ? and t_student_study_history.student_id = ?
+        ORDER BY
+        num;
+    `, [courseId,student_id],"课程大纲查询成功！")
+})
+
+
+// 4. 课程大纲二
+router.get("/outline/two", (req, resp) => {
+    const {courseId} = req.query;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            t_course_list.id,
+            t_course_list.num,
+            t_course_list.title,
+            t_course_list.video_url
+        FROM
+            t_course_list
+        WHERE
+            t_course_list.course_id = ?
+        ORDER BY
+            num;
+    `, [courseId],"课程大纲查询成功！")
+})
+
 
 module.exports = router;
