@@ -210,7 +210,7 @@ router.get("/my_order/:id",(req,resp)=>{
 
 
 // 5. 头像的更新
-let uploader = multer({dest: path.resolve(__dirname, "../../public/images/user")})
+let uploader = multer({dest: path.resolve(__dirname, "../../zzpublic/images/user")})
 router.post("/update_header",uploader.single("header"), (req, resp) => {
     let file = req.file;
     let {user_id} = req.body;
@@ -250,6 +250,7 @@ router.post("/update_header",uploader.single("header"), (req, resp) => {
 
 })
 
+
 // 6. 用户基本信息更新
 router.post("/update_info", (req, resp) => {
     const {nick_name,sex,intro,name,E_mail,phone_number,qq_number,student_id} = req.body;
@@ -264,22 +265,44 @@ router.post("/update_info", (req, resp) => {
         qq_number = ? 
     WHERE
         id = ?;
-    `, [nick_name,sex,intro,name,E_mail,phone_number,qq_number,+student_id]).then(result=>{
-        console.log(result)
+    `, [nick_name,+sex,intro,name,E_mail,phone_number,qq_number,+student_id]).then(result=>{
         // id 不存在 affectedRows
         // id 存在 新旧内容不一样
         // id 存在  新旧内容一样
         // console.log(result);
-        if (result.affectedRows > 0) {
+        if (result.changedRows > 0) {
             // 更新成功
             resp.tool.execSQL("select id, account, nick_name, header_url, intro from t_students where id=?;", [student_id]).then(userResult=>{
                 resp.send(resp.tool.ResponseTemp(0, "更新成功！", userResult[0]))
             })
         }else {
             //已经更新过了
-            resp.send(resp.tool.ResponseTemp(0, "更新失败！", {}))
+            resp.send(resp.tool.ResponseTemp(-1, "更新失败！", {}))
         }
     })
+})
+
+
+
+// 6. 用户基本信息查询
+router.get("/get-user-info/:id", (req, resp) => {
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            id,
+            nick_name,
+            sex,
+            intro,
+            name,
+            E_mail,
+            phone_number,
+            qq_number,
+            shipping_address 
+        FROM
+            t_students 
+        WHERE
+            id = ?;
+    `,[id],"用户基本信息查询成功！")
 })
 
 // 7. 密码的修改
@@ -290,11 +313,11 @@ router.post("/update_password", (req, resp)=>{
     `, [new_password, account, password], "更新完成!", result=>{
         if (result.affectedRows > 0) {
             return {
-                message: "用户密码更新成功!"
+                code: 0
             }
         } else {
             return {
-                message: "账号或者密码错误, 更新失败!"
+                code: -1
             }
         }
     })
