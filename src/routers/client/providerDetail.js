@@ -1,5 +1,4 @@
 const express = require("express");
-const {response} = require("express");
 let router = express.Router();
 router.get("/provider/:id",(req,resp)=>{
     const {id} = req.params;

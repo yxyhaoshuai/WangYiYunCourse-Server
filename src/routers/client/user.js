@@ -210,7 +210,7 @@ router.get("/my_order/:id",(req,resp)=>{
 
 
 // 5. 头像的更新
-let uploader = multer({dest: path.resolve(__dirname, "../../zzpublic/images/user")})
+let uploader = multer({dest: path.resolve(__dirname, "../../public/images/user")})
 router.post("/update_header",uploader.single("header"), (req, resp) => {
     let file = req.file;
     let {user_id} = req.body;
