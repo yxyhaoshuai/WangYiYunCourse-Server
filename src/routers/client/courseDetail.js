@@ -92,7 +92,7 @@ router.get("/course/introduction/course_item/:id", (req, resp) => {
     WHERE
         course_id = ? 
     ORDER BY
-        t_course_list.id ASC;
+        t_course_list.num ASC;
     `, [id], "课时条目查询成功！")
 })
 

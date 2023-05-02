@@ -362,14 +362,15 @@ router.post("/update_study_history", (req, resp) => {
 
 
     // is_finish: 1 代表已经学完了该课时, 否则, 就正在学习
-    const {student_id, course_id, course_list_id, status=0} = req.body;
+    const {student_id, course_list_id, status=0} = req.body;
+
     resp.tool.execSQL(`
         select count(*) as is_learned from t_student_study_history where student_id=? and course_list_id=?;
     `, [student_id, course_list_id]).then(result=>{
-
         let is_learned = result[0].is_learned;
         if (is_learned > 0) {
             // 更新
+
             resp.tool.execSQLTEMPAutoResponse(`
                     UPDATE t_student_study_history 
                         SET status = ?
@@ -380,8 +381,8 @@ router.post("/update_study_history", (req, resp) => {
         } else {
             // 新增
             resp.tool.execSQLTEMPAutoResponse(`
-                insert into t_student_study_history (student_id, course_id, course_list_id, status) values (?, ?, ?, ?);
-            `, [student_id, course_id, course_list_id, +status === 0 ? 1 : 2, student_id, course_list_id], "插入成功!", result=>({}))
+                insert into t_student_study_history (student_id, course_list_id, status) values (?, ?, ?);
+            `, [student_id, course_list_id, +status === 0 ? 1 : 2, student_id, course_list_id], "插入成功!", result=>({}))
         }
     })
 })

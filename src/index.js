@@ -17,6 +17,7 @@ const categorysDetail = require("./routers/client/categorysDetail")
 const seriesCourseDetail = require("./routers/client/seriesCourseDetail")
 const seriesCourseList = require("./routers/client/seriesCourseList")
 const orderPage = require("./routers/client/orderPage")
+const courseMainPages = require("./routers/client/courseMainPages")
 
 
 
@@ -58,9 +59,7 @@ app.use("/",categorysDetail)
 app.use("/",seriesCourseDetail)
 app.use("/",seriesCourseList)
 app.use("/",orderPage)
-
-
-
+app.use("/",courseMainPages)
 
 
 // 6、404
