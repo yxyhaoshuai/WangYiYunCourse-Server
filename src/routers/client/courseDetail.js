@@ -63,22 +63,74 @@ router.get("/course/introduction/:id", (req, resp) => {
     `, [id], "课程详情查询成功！")
 })
 
-router.get("/course/introduction/comment/:id", (req, resp) => {
-    const {id} = req.params;
+router.get("/course/commentList", (req, resp) => {
+    let {id,page_num=1,page_size=20}=req.query;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            t_students.id,
+            t_students.header_url,
+            t_students.nick_name,
+            t_comment.score,
+            t_comment.content,
+            t_comment.creation_time 
+        FROM
+            t_comment
+        LEFT JOIN t_students ON t_comment.student_id = t_students.id 
+        WHERE
+            t_comment.course_id = ? 
+        ORDER BY
+            t_comment.creation_time DESC 
+        LIMIT ${(page_num - 1) * page_size}, ${page_size};
+    `, [id], "课程详情评论查询成功！")
+})
+
+
+router.get("/course/commentListLimit5/:id", (req, resp) => {
+    let {id}=req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            t_students.id,
+            t_students.header_url,
+            t_students.nick_name,
+            t_comment.score,
+            t_comment.content,
+            t_comment.creation_time 
+        FROM
+            t_comment
+        LEFT JOIN t_students ON t_comment.student_id = t_students.id 
+        WHERE
+            t_comment.course_id = ? 
+        ORDER BY
+            t_comment.creation_time DESC 
+        LIMIT 5;
+    `, [id], "课程详情评论限制5条查询成功！")
+})
+
+
+router.get("/course/is_comment", (req, resp) => {
+    let {cid,uid}=req.query;
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
-        t_students.id,
-        t_students.header_url,
-        t_students.nickname,
-        t_comment.score,
-        t_comment.content,
-        t_comment.creation_time 
+        * 
     FROM
-        t_comment
-    LEFT JOIN t_students ON t_comment.student_id = t_students.id 
+        t_comment 
     WHERE
-        t_comment.course_id = ?;
-    `, [id], "课程详情评论查询成功！")
+        course_id = ? 
+    AND student_id = ?;
+    `,[cid,uid],"用户是否评论该课程查询成功！")
+
+})
+
+
+router.get("/course/commentListCount/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            COUNT(id) as commentCount
+        FROM
+            t_comment WHERE course_id = ?; 
+    `,[id],"评论数量查询成功！")
+
 })
 
 
@@ -102,7 +154,7 @@ router.post("/course/introduction/insertcomment", (req, resp) => {
     //查看是否评论过
     resp.tool.execSQL(`select id from t_comment where student_id=? and course_id=?;`, [student_id, course_id]).then(result => {
         if (result.length > 0) {
-            resp.send(resp.tool.ResponseTemp(-1, "每个人只能评论一次哦!", {}))
+            resp.send(resp.tool.ResponseTemp(-1, "您已经评论过了哦！", {}))
         } else {
             resp.tool.execSQLTEMPAutoResponse(`
         INSERT INTO t_comment(course_id,student_id,content,score) VALUES(?,?,?,?);

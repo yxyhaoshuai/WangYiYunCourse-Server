@@ -101,6 +101,22 @@ router.get("/network-school-info/:id",(req,resp)=>{
 })
 
 
+router.get("/get-series-course-info/:id",(req,resp)=>{
+    const {id} = req.params;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            t_series_courses.id,
+            t_series_courses.title 
+        FROM
+            t_courses
+        LEFT JOIN t_series_courses_son ON t_courses.series_courses_son_id = t_series_courses_son.id
+        LEFT JOIN t_series_courses ON t_series_courses_son.series_courses_id = t_series_courses.id 
+        WHERE
+            t_courses.id = ?;
+    `,[id],"courseMain页面中的系列课程查询成功！")
+})
+
+
 
 
 
