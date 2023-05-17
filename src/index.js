@@ -18,6 +18,7 @@ const seriesCourseDetail = require("./routers/client/seriesCourseDetail")
 const seriesCourseList = require("./routers/client/seriesCourseList")
 const orderPage = require("./routers/client/orderPage")
 const courseMainPages = require("./routers/client/courseMainPages")
+const talkDetail = require("./routers/client/talkDetail")
 
 
 
@@ -60,6 +61,7 @@ app.use("/",seriesCourseDetail)
 app.use("/",seriesCourseList)
 app.use("/",orderPage)
 app.use("/",courseMainPages)
+app.use("/",talkDetail)
 
 
 // 6、404

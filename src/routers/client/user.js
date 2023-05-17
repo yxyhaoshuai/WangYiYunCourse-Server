@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const {getCurrentTime} = require("../../tool/sz_dateTime");
 let router = express.Router();
 
 // 1. 注册接口
@@ -106,15 +107,17 @@ router.get("/mystudy/:id",(req,resp)=>{
         t_courses.id,
         t_courses.img_url,
         t_courses.course_title,
-        COUNT( t_courses.id ) AS course_count
-    FROM
+        COUNT( t_courses.id ) AS course_count 
+        FROM
         t_have_bought
         LEFT JOIN t_courses ON t_have_bought.course_id = t_courses.id
         LEFT JOIN t_course_list ON t_courses.id = t_course_list.course_id 
-    WHERE
+        WHERE
         t_have_bought.student_id = ? 
-    GROUP BY
-        t_courses.id;
+        GROUP BY
+        t_courses.id 
+        ORDER BY
+        t_have_bought.create_time DESC;
     `,[id],"我的学习查询成功!")
 })
 
@@ -144,6 +147,23 @@ router.get("/mystudylater",(req,resp)=>{
                 resp.send(resp.tool.ResponseTemp(0,"查询学生已学习某课程数和课程总数查询成功！",[result[0],result2[0]]))
             })
     })
+})
+
+
+
+//置顶我的学习
+router.post("/top-my-study-course",(req,resp)=>{
+    const {course_id,student_id} = req.body;
+    const newTime = getCurrentTime();
+
+    resp.tool.execSQLTEMPAutoResponse(`
+    UPDATE t_have_bought 
+    SET create_time = ?
+    WHERE
+        course_id = ? 
+    AND student_id = ?;
+    `,[newTime,course_id,student_id],"置顶成功！")
+
 })
 
 router.get("/my_collect/:id",(req,resp)=>{

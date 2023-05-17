@@ -105,12 +105,12 @@ router.get("/home_series_course",(req,resp)=>{
 
 router.get("/home_mini_ad",(req,resp)=>{
     resp.tool.execSQLTEMPAutoResponse(`
-    SELECT
-        * 
-    FROM
-        t_mini_ad 
-    WHERE
-        is_home_show = 1;
+        SELECT
+            * 
+        FROM
+            t_mini_ad 
+        WHERE
+            is_home_show = 1;
     `,[],"首页左侧小广告查询成功!")
 })
 
