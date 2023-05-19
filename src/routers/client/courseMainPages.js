@@ -116,6 +116,19 @@ router.get("/get-series-course-info/:id",(req,resp)=>{
     `,[id],"courseMain页面中的系列课程查询成功！")
 })
 
+//用户是否已购买
+router.post("/is_have_bought",(req,resp)=>{
+    const {course_id,student_id} = req.body;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            id 
+        FROM
+            t_have_bought 
+        WHERE
+            course_id = ? 
+            AND student_id = ?;
+    `,[course_id,student_id],"是否已购买查询成功！")
+})
 
 
 

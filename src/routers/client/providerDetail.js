@@ -124,6 +124,20 @@ router.get("/provider/course/instructor/lunbo/:id",(req,resp)=>{
 
 })
 
+//获取老师名
+router.get("/get-teacher-name",(req,resp)=>{
+    const {id} =req.query;
+    resp.tool.execSQLTEMPAutoResponse(`
+        SELECT
+            * 
+        FROM
+            t_teachers WHERE id = ?;
+    `,[id],"讲师名查询成功！")
+
+
+
+})
+
 
 
 module.exports = router;

@@ -246,7 +246,7 @@ router.post("/update_header",uploader.single("header"), (req, resp) => {
             // /images/user/zsf.jpg
             let userHeaderPath = userObj.header_url;
             // 不是默认头像
-            if (userHeaderPath.toLowerCase() !== "/images/user/xl.jpg") {
+            if (userHeaderPath !== "/images/user/newUser.jpg") {
                 // 删除对应的图片资源
                 fs.unlinkSync(path.resolve(__dirname, "../../public", "." + userHeaderPath))
             }
@@ -406,6 +406,49 @@ router.post("/update_study_history", (req, resp) => {
         }
     })
 })
+
+
+// 购买接口
+router.post("/buy-course", (req, resp) => {
+    try {
+        const { courseIdArray, student_id } = req.body;
+        // 查询指定学生已经购买的课程id集合
+        resp.tool.execSQL(`
+      SELECT course_id FROM t_have_bought WHERE student_id = ?;
+    `, [student_id]).then((result) => {
+            const boughtCourseIds = new Set(result.map((item) => item.course_id));
+
+            // 筛选出未购买的课程id集合
+            const newCourseIdArray = courseIdArray.filter((item) => !boughtCourseIds.has(item));
+
+            if (newCourseIdArray.length === 0) {
+                resp.send(resp.tool.ResponseTemp(-1, "你选择的课程都买过了哦！", []));
+                return;
+            }
+
+            // 将新的课程id和学生id组成的组合插入到 t_have_bought 表中
+            const values = newCourseIdArray.map((course_id) => `(${course_id}, ${student_id})`).join(", ");
+
+            resp.tool.execSQL(`
+        INSERT INTO t_have_bought (course_id, student_id)
+        VALUES ${values};
+      `, []).then((result) => {
+                if (result.affectedRows > 0) {
+                    resp.send(resp.tool.ResponseTemp(0, "课程购买成功！", []));
+                } else {
+                    resp.send(resp.tool.ResponseTemp(-1, "课程购买失败", []));
+                }
+            });
+        });
+    } catch (error) {
+        console.log("什么鬼")
+        resp.send(resp.tool.ResponseTemp(-1, "购买课程失败：" + error.message, []));
+    }
+});
+
+
+
+
 
 
 module.exports = router;

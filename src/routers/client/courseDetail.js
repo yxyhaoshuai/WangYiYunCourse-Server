@@ -158,7 +158,7 @@ router.post("/course/introduction/insertcomment", (req, resp) => {
         } else {
             resp.tool.execSQLTEMPAutoResponse(`
         INSERT INTO t_comment(course_id,student_id,content,score) VALUES(?,?,?,?);
-    `, [course_id, student_id, content, score], "评论成功!", result => {
+    `, [course_id, student_id, content.length ===0 ? "该用户未给予评价" : content, score], "评论成功!", result => {
                 if (result.affectedRows > 0) {
                     return {
                         message: "评论成功!"
