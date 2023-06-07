@@ -65,7 +65,6 @@ router.get("/courses-search",(req,resp)=>{
 //搜索系列课程
 router.get("/series-courses-search",(req,resp)=>{
     let {keyword,page_num=1,page_size=50}=req.query;
-    console.log(keyword)
     resp.tool.execSQLTEMPAutoResponse(`
     SELECT
         t_series_courses.id,
