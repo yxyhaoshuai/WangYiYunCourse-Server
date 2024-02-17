@@ -107,17 +107,18 @@ router.get("/mystudy/:id",(req,resp)=>{
         t_courses.id,
         t_courses.img_url,
         t_courses.course_title,
-        COUNT( t_courses.id ) AS course_count 
-        FROM
+        COUNT( t_courses.id ) AS course_count,
+        MAX( t_have_bought.create_time ) AS max_create_time
+    FROM
         t_have_bought
         LEFT JOIN t_courses ON t_have_bought.course_id = t_courses.id
         LEFT JOIN t_course_list ON t_courses.id = t_course_list.course_id 
-        WHERE
-        t_have_bought.student_id = ? 
-        GROUP BY
+    WHERE
+        t_have_bought.student_id = ${id} 
+    GROUP BY
         t_courses.id 
-        ORDER BY
-        t_have_bought.create_time DESC;
+    ORDER BY
+        max_create_time DESC;
     `,[id],"我的学习查询成功!")
 })
 

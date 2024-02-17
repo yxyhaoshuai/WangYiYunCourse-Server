@@ -205,6 +205,7 @@ router.post("/course/introduction/insertfavorite", (req, resp) => {
 //收藏多个课程
 router.post("/course/introduction/insertfavorites", (req, resp) => {
     const {courseIdArray, student_id} = req.body;
+    console.log(courseIdArray,1)
     //查看是否收藏过
     resp.tool.execSQL(`
         SELECT
@@ -214,10 +215,11 @@ router.post("/course/introduction/insertfavorites", (req, resp) => {
         WHERE
             student_id = ?;
 `, [student_id]).then(result => {
+        console.log(result,2)
         if (result.length > 0) {
             resp.tool.execSQL(`
-                DELETE FROM t_favorite WHERE id IN (${result.map(item=>{
-                    return item.id
+                DELETE FROM t_favorite WHERE course_id IN (${courseIdArray.map(item=>{
+                    return item
                 })});
             `).then((result) => {
                 if (result.affectedRows > 0) {
