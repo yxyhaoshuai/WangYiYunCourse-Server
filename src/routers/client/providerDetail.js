@@ -30,19 +30,25 @@ router.get("/provider/course/list",(req,resp)=>{
             t_courses.img_url,
             t_courses.price,
             t_courses.course_intro,
-            ROUND( avg( score ), 1 ) AS avg_score,
+            ROUND( AVG( t_comment.score ), 1 ) AS avg_score,
             t_courses.is_school_recommend 
         FROM
             t_network_school
-        LEFT JOIN t_teachers ON t_network_school.id = t_teachers.school_id
-        LEFT JOIN t_courses ON t_teachers.id = t_courses.teacher_id
+            LEFT JOIN t_teachers ON t_network_school.id = t_teachers.school_id
+            LEFT JOIN t_courses ON t_teachers.id = t_courses.teacher_id
         LEFT JOIN t_comment ON t_courses.id = t_comment.course_id 
-        GROUP BY
-            t_courses.id 
-        HAVING
+        WHERE
             t_network_school.id = ? 
+        GROUP BY
+            t_network_school.id,-- 将 t_network_school.id 添加到 GROUP BY 中
+            t_courses.id,
+            t_courses.course_title,
+            t_courses.img_url,
+            t_courses.price,
+            t_courses.course_intro,
+            t_courses.is_school_recommend 
         ORDER BY
-            ${method} desc 
+            ${method} DESC 
         LIMIT ${(page_num - 1) * page_size}, ${page_size};
     `,[id],"网校网课查询成功！")
 })
@@ -69,26 +75,26 @@ router.get("/provider/course/list/home",(req,resp)=>{
     const {id} = req.query;
     resp.tool.execSQLTEMPAutoResponse(`
         SELECT
-            t_network_school.id AS schoolid,
-            t_courses.id AS id,
-            t_courses.course_title,
-            t_courses.img_url,
-            t_courses.price,
-            t_courses.course_intro,
-            ROUND( avg( score ), 1 ) AS avg_score,
-            t_courses.is_school_recommend
-        FROM
-            t_network_school
-        LEFT JOIN t_teachers ON t_network_school.id = t_teachers.school_id
-        LEFT JOIN t_courses ON t_teachers.id = t_courses.teacher_id
-        LEFT JOIN t_comment ON t_courses.id = t_comment.course_id 
-        GROUP BY
-            t_courses.id 
-        HAVING
-            t_network_school.id = ? and t_courses.is_school_recommend = 1
-        ORDER BY
-            create_time desc 
-        LIMIT 10;
+    t_network_school.id AS schoolid,
+    t_courses.id AS id,
+    t_courses.course_title,
+    t_courses.img_url,
+    t_courses.price,
+    t_courses.course_intro,
+    ROUND(AVG(score), 1) AS avg_score,
+    t_courses.is_school_recommend
+FROM
+    t_network_school
+LEFT JOIN t_teachers ON t_network_school.id = t_teachers.school_id
+LEFT JOIN t_courses ON t_teachers.id = t_courses.teacher_id
+LEFT JOIN t_comment ON t_courses.id = t_comment.course_id 
+WHERE
+    t_network_school.id = ? AND t_courses.is_school_recommend = 1
+GROUP BY
+    t_courses.id 
+ORDER BY
+    create_time DESC 
+LIMIT 10;
     `,[id],"网校网课查询成功！")
 })
 
