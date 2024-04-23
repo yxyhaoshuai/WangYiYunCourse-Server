@@ -1,6 +1,7 @@
-# 抄袭了网易云课堂的UI和网站的业务逻辑,然后自己设计数据库结构、自己写前端和后端代码，独自从0到1构建网易云课堂
+# 抄袭网易云课堂的所有UI和功能逻辑(有一些页面不做),独自设计数据库结构、独自编写前端和后端代码，独自从0到1构建网易云课堂！
 # WangYiYunCourse-Client
 # 总共有20个动态数据渲染的页面，包含了网易云课堂所有基本功能架构！
+# 这小伙子为了毕业找到满意的工作也是拼了！
 ![Alt text for image1](/public/website-screenshot/a.png)
 ![Alt text for image1](/public/website-screenshot/h.png)
 ![Alt text for image1](/public/website-screenshot/c.jpeg)
@@ -11,11 +12,16 @@
 ![Alt text for image1](/public/website-screenshot/e.png)
 ![Alt text for image1](/public/website-screenshot/f.png)
 
-网站说明： 这个网站一共包含了后端接口服务器、前台服务器、后台服务器、三个项目，如果你想运行这个网站，你需要下载这三个项目和mysql文件。
+网站说明： 此网站包含了后端（WangYiYunCourse-Server）、前端前台（WangYiYunCourse-Client）、前端后台（wang-yi-yun-course-manage）三个项目，如果你想运行这个网站，你需要下载这三个项目和mysql文件，mysql文件在项目WangYiYunCourse-Client的文件目录里。
 
-可以运行的nodejs版本：18.19.0
-一、下载网易云课堂三个项目和MySQL文件到本地（网易云课堂后台还没有开发，但不影响前台的运行，所以现在我的github远程仓库只有两个关于网易云课堂的项目）  
-二、下载到本地后，如果你的计算机安装了WebStorm，请你使用WebStorm打开这三个项目，WebStorm就会提示你使用npm安装依赖包，你点击安装依赖包即可（三个项目都是同样的操作，用webstorm打开三个项目后点击安装依赖包）。  
-三、安装完依赖包后运行sql文件。此网站和严选云课有着相似的架构，可以说是阉割版严选与课堂。当然安全性和健全性比网易云课堂原网站差太远，原因是安全性需要后端开发工程师、前端开发工程师、网站架构师、网络安全等等岗位共同设计，我一个人是无法完成的。但是无论怎样此网站也是有自己的数据库架构。你需要在你的电脑上安装mysql并且运行sql文件（建议使用MySql可视化工具运行sql文件更方便），这样你的电脑上就有网易云课堂数据库的数据和结构了。默认情况下你的电脑上的网易云课堂后端服务器是无法访问数据库的，需要先在Windows PoverShell设置权限，否则网站运行的时候后端访问数据库时会报错，具体设置权限的步骤可以查百度。  
-四、启动三个项目的服务器，如果你的计算机安装了webstorm：1、打开前台服务器需要你双击前台根目录的package.json，点击"dev": "next dev"前面的开始按钮运行。后端服务器需要进入src目录下并且运行index.js文件。  
-五、保证后端和前端服务器都打开的前提下。打开浏览器，地址栏输入 http://localhost:3000/ 即可访问网站。  
+此网站所有项目的nodejs版本为：18.19.0 以上版本
+运行网站：
+一、安装18.19.0以上版本的nodejs。
+二、克隆网易云课堂的三个项目和MySQL文件到本地。
+三、安装8.0版本的mysql并执行sql文件。
+四、用终端分别进入三个项目的根目录执行npm install安装所有依赖包。  
+五、此网站和网易云课有着相似的架构，可以说是阉割版网易云课堂。当然安全性比真实的网易云课堂差，请求参数这些都没有做加密处理。默认情况下你的电脑上的网易云课堂后端是无法连接数据库的，需要先在Windows PoverShell设置权限，否则网站无法运行，具体设置权限的步骤可以自行查百度。  
+六、启动后端项目（WangYiYunCourse-Server）：运行src目录下的index.js文件即可，也可以用pm2启动项目。
+七、启动网站前台项目（WangYiYunCourse-Client）：用终端进入项目根目录执行npm run dev命令。
+八、启动网站后台项目（wang-yi-yun-course-manage）：用终端进入项目根目录执行npm run serve命令。
+九、打开浏览器，地址栏输入 http://localhost:3000/ 访问网站前台，地址栏输入 http://localhost:3002/ 访问网站后台。  
