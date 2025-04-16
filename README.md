@@ -1,18 +1,67 @@
-# 抄袭网易云课堂的所有UI和功能逻辑(有一些页面不做),独自设计数据库结构、独自编写前端和后端代码，独自从0到1构建网易云课堂！
-# WangYiYunCourse-Client
-# 总共有20个动态数据渲染的页面，包含了网易云课堂所有基本功能架构！
-一、网站说明： 此网站包含了后端（WangYiYunCourse-Server）、前端前台（WangYiYunCourse-Client）、前端后台（wang-yi-yun-course-manage）三个项目，如果你想运行这个网站，你需要下载这三个项目和mysql文件，mysql文件在项目WangYiYunCourse-Client的文件目录里。
-二、此网站所有项目的nodejs版本为：18.19.0 以上版本。
-三、运行网站：
-1.安装18.19.0以上版本的nodejs。
-2.克隆网易云课堂的三个项目和MySQL文件到本地。
-3.安装8.0版本的mysql并执行sql文件。
-4.用终端分别进入三个项目的根目录执行npm install安装所有依赖包。  
-5.此网站和网易云课有着相似的架构，可以说是阉割版网易云课堂。当然安全性比真实的网易云课堂差，请求参数这些都没有做加密处理。默认情况下你的电脑上的网易云课堂后端是无法连接数据库的，需要先在Windows PoverShell设置权限，否则网站无法运行，具体设置权限的步骤可以自行查百度。  
-6.启动后端项目（WangYiYunCourse-Server）：运行src目录下的index.js文件即可，也可以用pm2启动项目。
-7.启动网站前台项目（WangYiYunCourse-Client）：用终端进入项目根目录执行npm run dev命令。
-8.启动网站后台项目（wang-yi-yun-course-manage）：用终端进入项目根目录执行npm run serve命令。
-9.打开浏览器，地址栏输入 http://localhost:3000/ 访问网站前台，地址栏输入 http://localhost:3002/ 访问网站后台。  
+# WangYiYunCourse-Server
+>本项目致敬网易云课堂，仿照其 UI 设计和核心功能逻辑（部分页面未开发），由开发者本人 独立设计数据库结构，独立编写前端与后端代码，从 0 到 1 搭建完成。
+---
+## ⚠️ 注意事项
+本项目为个人开发练习用途，安全性未做严格处理（例如：请求参数未加密），请勿直接用于生产环境。
+
+所有功能与页面为学习参考使用，无商业用途。
+
+欢迎提出建议或一起优化！
+
+---
+## 📌 项目简介
+本项目为一个仿制网易云课堂的学习平台系统，包含了共 **20 个动态数据渲染页面**，覆盖了网易云课堂的核心功能模块，前后端全部由本人独立完成开发。
+
+该项目由以下两个子项目组成：
+
+- 🎯 后端服务：`WangYiYunCourse-Server`
+- 🎯 前台前端：`WangYiYunCourse-Client`
+
+📁 数据库文件（`.sql`）位于 `WangYiYunCourse-Client` 项目根目录。
+
+---
+## 🔧 技术要求
+- Node.js：**≥ 18.19.0**
+- MySQL：**推荐 8.0+**
+---
+## 🚀 快速启动
+### 1. 安装 Node.js
+请确保本机已安装 Node.js 18.19.0 或更高版本。
+### 2. 克隆项目
+将以下两个项目和数据库文件克隆到本地：
+
+WangYiYunCourse-Server
+
+WangYiYunCourse-Client
+### 3. 配置数据库
+安装并启动 MySQL 8.0+
+
+使用数据库客户端导入 SQL 文件（在 WangYiYunCourse-Client 项目目录中）
+### 4. 安装依赖
+分别进入两个个项目根目录，执行以下命令：
+
+npm install
+### 5. 配置数据库连接权限（仅限 Windows）
+如果你在 Windows 上运行，默认 Node.js 可能无法直接连接数据库。你需要在 PowerShell 中为数据库开启远程访问权限，可搜索：
+
+mysql 远程连接权限配置
+### 6. 启动后端服务
+进入 WangYiYunCourse-Server 项目根目录，执行：
+
+node src/index.js
+
+或使用 PM2 守护进程：
+
+pm2 start src/index.js
+### 7. 启动前台项目
+进入 WangYiYunCourse-Client 根目录，执行：
+
+npm run dev
+### 8. 访问地址
+浏览器输入地址：http://localhost:3000/
+
+---
+## 📷 效果预览
 ![Alt text for image1](/public/website-screenshot/a.png)
 ![Alt text for image1](/public/website-screenshot/h.png)
 ![Alt text for image1](/public/website-screenshot/c.jpeg)
@@ -22,4 +71,9 @@
 ![Alt text for image1](/public/website-screenshot/j.png)
 ![Alt text for image1](/public/website-screenshot/e.png)
 ![Alt text for image1](/public/website-screenshot/f.png)
+---
+## 📞 联系方式
+如果你对该项目有兴趣，欢迎通过微信“YanXiuYuWeiXinHao”与我交流！
 
+
+```bash
