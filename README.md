@@ -62,15 +62,15 @@ npm run dev
 
 ---
 ## 📷 效果预览
-![Alt text for image1](/public/website-screenshot/a.png)
-![Alt text for image1](/public/website-screenshot/h.png)
-![Alt text for image1](/public/website-screenshot/c.jpeg)
-![Alt text for image1](/public/website-screenshot/b.png)
-![Alt text for image1](/public/website-screenshot/i.png)
-![Alt text for image1](/public/website-screenshot/g.png)
-![Alt text for image1](/public/website-screenshot/j.png)
-![Alt text for image1](/public/website-screenshot/e.png)
-![Alt text for image1](/public/website-screenshot/f.png)
+![Alt text for image1](/src/public/website-screenshot/a.png)
+![Alt text for image1](/src/public/website-screenshot/h.png)
+![Alt text for image1](/src/public/website-screenshot/c.jpeg)
+![Alt text for image1](/src/public/website-screenshot/b.png)
+![Alt text for image1](/src/public/website-screenshot/i.png)
+![Alt text for image1](/src/public/website-screenshot/g.png)
+![Alt text for image1](/src/public/website-screenshot/j.png)
+![Alt text for image1](/src/public/website-screenshot/e.png)
+![Alt text for image1](/src/public/website-screenshot/f.png)
 ---
 ## 📞 联系方式
 如果你对该项目有兴趣，欢迎通过微信“YanXiuYuWeiXinHao”与我交流！
